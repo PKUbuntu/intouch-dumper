@@ -9,7 +9,7 @@ The history logs of intouch are two type of files:
 
 ** lgn
 - 512 bytes each block
-  - 4 bytes -> operator type ("EC13 0300/0200" means data store in this operator)
+  - 4 bytes -> operator type ("EC13 0100/0200/0300" means data (BOOL/INT/DOUBLE) store in this operator)
   - 4 bytes -> number of <timestamp, data> that will follow
   - 48 bytes (8 bytes + 40 bytes): timestamp + string type
   - (number - 1) <timestamp, value> followed

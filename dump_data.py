@@ -17,13 +17,12 @@ def get_time_from_bytes(bytes: bytes) -> datetime:
     return utc_time
 
 
-
-# Open binary file "./data/24072200.lgh"
-with open("./data/24072200.lgh", "rb") as f:
+# Open binary file "./data/24072300.lgh"
+with open("./data/24072300.lgh", "rb") as f:
     # 512 字节作为 block 单元
     content = f.read(512)
     while content:
-        if content[:4].hex() in ['ec130300', 'ec130200']:
+        if content[:4].hex() in ['ec130300', 'ec130200', 'ec130100']:
             # 将后 [4:8] 字节作为整数读取 --> 
             num_record = int.from_bytes(content[4:8], byteorder='little')
             op_time = get_time_from_bytes(content[8:16])
@@ -41,11 +40,15 @@ with open("./data/24072200.lgh", "rb") as f:
 
                 # 读取 8 字节的浮点数 value
                 value = struct.unpack('<d', content[records_offset+8:records_offset+16])[0]
-
+                
                 records_offset += 16
                 records_remains -= 1
 
-                print(f'{tag_name}\t\t{value:.2f}\t{timestamp}')
+                if content[:4].hex() == 'ec130300':
+                    print(f'{tag_name}\t\t{value:.2f}\t{timestamp}')    
+                else:
+                    # int / bool , 截断小数部分即可
+                    print(f'{tag_name}\t\t{value:.0f}\t{timestamp}')
 
                 # value_average = struct.unpack('<d', content[records_offset:records_offset+8])[0]
             print(f'\t\t----- Above are {num_record} records -----\n')
